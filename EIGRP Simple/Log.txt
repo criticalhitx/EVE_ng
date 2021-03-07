@@ -1,0 +1,17 @@
+ter len 0
+sh run
+sh run | sec eigrp
+sh ip int br
+
+sh eigrp address-family ipv4 neighbor
+sh eigrp address-family ipv4 interface
+sh eigrp address-family ipv4 topology
+sh ip route
+sh ip protocol
+
+sh ipv6 int br
+sh ipv6 route
+sh ipv6 protocol
+sh eigrp address-family ipv6 neighbor
+sh eigrp address-family ipv6 interface
+sh eigrp address-family ipv6 topology

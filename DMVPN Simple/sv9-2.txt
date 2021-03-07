@@ -1,0 +1,158 @@
+sv9-2#show run
+Building configuration...
+
+Current configuration : 1827 bytes
+!
+version 12.3
+service config
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname sv9-2
+!
+boot-start-marker
+boot-end-marker
+!
+enable password cisco
+!
+no aaa new-model
+ip subnet-zero
+!
+!
+no ip domain lookup
+!
+ip ssh break-string
+!
+
+!--- Create an Internet Security Association and Key Management !--- Protocol (ISAKMP) policy for Phase 1 negotiations.
+
+!
+crypto isakmp policy 10
+hash md5
+authentication pre-share
+
+!--- Add dynamic pre-shared keys for all the remote VPN !--- routers.
+
+crypto isakmp key cisco123 address 0.0.0.0 0.0.0.0
+!
+
+!--- Create the Phase 2 policy for actual data encryption.
+
+crypto ipsec transform-set strong esp-3des esp-md5-hmac 
+!
+
+!--- Create an IPSec profile to be applied dynamically to the !--- GRE over IPSec tunnels.
+
+crypto ipsec profile cisco
+set security-association lifetime seconds 120
+set transform-set strong 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+no voice hpi capture buffer
+no voice hpi capture destination 
+!
+!
+!
+!
+!
+!
+!
+
+!--- Create a GRE tunnel template which will be applied to !--- all the dynamically created GRE tunnels.
+
+interface Tunnel0
+ip address 192.168.1.1 255.255.255.0
+no ip redirects
+ip mtu 1440
+ip nhrp authentication cisco123
+ip nhrp map multicast dynamic
+ip nhrp network-id 1
+no ip split-horizon eigrp 90
+no ip next-hop-self eigrp 90
+tunnel source FastEthernet0/0
+tunnel mode gre multipoint
+tunnel key 0
+tunnel protection ipsec profile cisco
+!
+
+!--- This is the outbound interface.
+
+interface FastEthernet0/0
+ip address 209.168.202.225 255.255.255.0
+duplex auto
+speed auto
+!
+
+!--- This is the inbound interface.
+
+interface FastEthernet0/1
+ip address 1.1.1.1 255.255.255.0
+duplex auto
+speed auto
+!
+interface BRI1/0
+no ip address
+shutdown
+!
+interface BRI1/1
+no ip address
+shutdown
+!
+interface BRI1/2
+no ip address
+shutdown 
+!
+interface BRI1/3
+no ip address
+shutdown
+!
+
+!--- Enable a routing protocol to send and receive !--- dynamic updates about the private networks.
+
+router eigrp 90
+network 1.1.1.0 0.0.0.255
+network 192.168.1.0
+no auto-summary
+!
+ip http server
+no ip http secure-server
+ip classless
+ip route 0.0.0.0 0.0.0.0 209.168.202.226
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+line con 0
+exec-timeout 0 0
+transport preferred all
+transport output all
+escape-character 27
+line aux 0
+transport preferred all
+transport output all
+line vty 0 4
+password cisco
+login
+transport preferred all
+transport input all
+transport output all
+!
+!
+end
