@@ -1,0 +1,35 @@
+!R3
+crypto isakmp policy 10
+ authentication pre-share
+ hash sha256
+ encryption aes
+ group 14
+!
+crypto isakmp key CISCO123 address 10.0.12.2
+!
+crypto ipsec transform-set AES_SHA esp-aes esp-sha-hmac
+ mode transport
+!
+ip access-list extended GRE_IPSEC_VPN
+ permit gre host 10.0.13.3 host 10.0.12.2
+!
+crypto map VPN 10 ipsec-isakmp
+ match address GRE_IPSEC_VPN
+ set transform AES_SHA
+ set peer 10.0.12.2
+!
+interface GigabitEthernet0/1
+ ip address 10.0.13.3 255.255.255.0
+ crypto map VPN
+!
+interface Tunnel100
+ bandwidth 4000
+ ip address 192.168.100.2 255.255.255.252
+ ip mtu 1400
+ tunnel source GigabitEthernet0/1
+ tunnel destination 10.0.12.2
+!
+router ospf 1
+ router-id 3.3.3.3
+ network 192.168.100.0 0.0.0.3 area 0
+ network 192.168.2.0 0.0.0.255 area 0
