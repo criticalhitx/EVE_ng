@@ -1,0 +1,307 @@
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#
+EdgeDRC#ter len 0
+EdgeDRC#sh run
+Building configuration...
+
+Current configuration : 3489 bytes
+!
+! Last configuration change at 11:27:16 UTC Wed May 26 2021
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname EdgeDRC
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.7.100.99 255.255.255.255
+!
+interface Loopback1
+ ip address 10.7.20.1 255.255.255.0
+!
+interface GigabitEthernet0/0
+ ip address 10.7.130.213 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ ip address 10.7.130.210 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ ip address 10.1.1.1 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 1
+ network 10.7.130.212 0.0.0.3 area 0
+ default-information originate
+!
+router bgp 64513
+ bgp log-neighbor-changes
+ network 10.7.20.0 mask 255.255.255.0
+ network 10.7.100.99 mask 255.255.255.255
+ network 172.16.0.0
+ neighbor 10.1.1.2 remote-as 64514
+ neighbor 10.7.130.209 remote-as 64513
+ neighbor 10.7.130.209 next-hop-self
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 Null0
+ip route 172.16.0.0 255.255.0.0 Null0
+!
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+no scheduler allocate
+!
+end
+
+EdgeDRC#sh ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0         10.7.130.213    YES manual up                    up
+GigabitEthernet0/1         10.7.130.210    YES manual up                    up
+GigabitEthernet0/2         10.1.1.1        YES manual up                    up
+GigabitEthernet0/3         unassigned      YES unset  up                    up
+Loopback0                  10.7.100.99     YES manual up                    up
+Loopback1                  10.7.20.1       YES manual up                    up
+EdgeDRC#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 0.0.0.0 to network 0.0.0.0
+
+S*    0.0.0.0/0 is directly connected, Null0
+      10.0.0.0/8 is variably subnetted, 20 subnets, 5 masks
+C        10.1.1.0/30 is directly connected, GigabitEthernet0/2
+L        10.1.1.1/32 is directly connected, GigabitEthernet0/2
+C        10.7.20.0/24 is directly connected, Loopback1
+L        10.7.20.1/32 is directly connected, Loopback1
+C        10.7.100.99/32 is directly connected, Loopback0
+C        10.7.130.208/30 is directly connected, GigabitEthernet0/1
+L        10.7.130.210/32 is directly connected, GigabitEthernet0/1
+C        10.7.130.212/30 is directly connected, GigabitEthernet0/0
+L        10.7.130.213/32 is directly connected, GigabitEthernet0/0
+B        10.17.20.0/24 [20/0] via 10.1.1.2, 03:29:06
+B        10.17.100.99/32 [20/0] via 10.1.1.2, 06:30:59
+O        10.17.130.212/30
+           [110/2] via 10.7.130.214, 03:04:36, GigabitEthernet0/0
+B        10.27.130.204/30 [200/0] via 10.7.130.209, 00:39:26
+B        10.120.0.0/16 [200/0] via 10.7.130.209, 00:39:26
+B        10.120.0.0/23 [20/0] via 10.1.1.2, 00:15:49
+B        10.120.2.0/23 [20/0] via 10.1.1.2, 00:15:49
+B        10.120.4.0/23 [200/0] via 10.7.130.209, 00:39:26
+B        10.120.6.0/23 [200/0] via 10.7.130.209, 00:39:26
+B        10.124.255.2/32 [200/0] via 10.7.130.209, 00:39:26
+B        10.124.255.3/32 [200/0] via 10.7.130.209, 00:39:26
+      172.16.0.0/16 is variably subnetted, 5 subnets, 2 masks
+S        172.16.0.0/16 is directly connected, Null0
+O        172.16.0.1/32 [110/2] via 10.7.130.214, 03:04:36, GigabitEthernet0/0
+O        172.16.1.1/32 [110/2] via 10.7.130.214, 03:04:36, GigabitEthernet0/0
+O        172.16.2.1/32 [110/2] via 10.7.130.214, 03:04:36, GigabitEthernet0/0
+O        172.16.3.1/32 [110/2] via 10.7.130.214, 03:04:36, GigabitEthernet0/0
+EdgeDRC#sh ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is 0.0.0.0 to network 0.0.0.0
+
+      10.0.0.0/8 is variably subnetted, 20 subnets, 5 masks
+B        10.17.20.0/24 [20/0] via 10.1.1.2, 03:29:06
+B        10.17.100.99/32 [20/0] via 10.1.1.2, 06:30:59
+B        10.27.130.204/30 [200/0] via 10.7.130.209, 00:39:26
+B        10.120.0.0/16 [200/0] via 10.7.130.209, 00:39:26
+B        10.120.0.0/23 [20/0] via 10.1.1.2, 00:15:49
+B        10.120.2.0/23 [20/0] via 10.1.1.2, 00:15:49
+B        10.120.4.0/23 [200/0] via 10.7.130.209, 00:39:26
+B        10.120.6.0/23 [200/0] via 10.7.130.209, 00:39:26
+B        10.124.255.2/32 [200/0] via 10.7.130.209, 00:39:26
+B        10.124.255.3/32 [200/0] via 10.7.130.209, 00:39:26
+EdgeDRC#sh ip bgp
+BGP table version is 310, local router ID is 10.17.130.210
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter,
+              x best-external, a additional-path, c RIB-compressed,
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.7.20.0/24     0.0.0.0                  0         32768 i
+ *>  10.7.100.99/32   0.0.0.0                  0         32768 i
+ *>  10.17.20.0/24    10.1.1.2                 0             0 64514 i
+ *>  10.17.100.99/32  10.1.1.2                 0             0 64514 i
+ *>i 10.27.130.204/30 10.7.130.209             0    100      0 i
+ *>  10.120.0.0/23    10.1.1.2                               0 64514 65242 i
+ *   10.120.0.0/16    10.1.1.2                               0 64514 65242 i
+ *>i                  10.7.130.209             0    100      0 65242 i
+ *>  10.120.2.0/23    10.1.1.2                               0 64514 65242 i
+ *>i 10.120.4.0/23    10.7.130.209             0    100      0 65242 i
+ *>i 10.120.6.0/23    10.7.130.209             0    100      0 65242 i
+ *   10.124.255.2/32  10.1.1.2                               0 64514 65242 i
+ *>i                  10.7.130.209             0    100      0 65242 i
+ *   10.124.255.3/32  10.1.1.2                               0 64514 65242 i
+ *>i                  10.7.130.209             0    100      0 65242 i
+ *>  172.16.0.0       0.0.0.0                  0         32768 i
+ *                    10.1.1.2                 0             0 64514 i
+EdgeDRC#sh ip sla sum
+IPSLAs Latest Operation Summary
+Codes: * active, ^ inactive, ~ pending
+
+ID           Type        Destination       Stats       Return      Last
+                                           (ms)        Code        Run
+-----------------------------------------------------------------------
+
+EdgeDRC#sh track
+EdgeDRC#sh ip access-list
+EdgeDRC#sh ip prefix-list
+EdgeDRC#sh route-map
+EdgeDRC#

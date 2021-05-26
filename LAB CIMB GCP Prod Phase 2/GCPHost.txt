@@ -1,0 +1,243 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!.
+Success rate is 99 percent (4778/4779), round-trip min/avg/max = 2/5/171 ms
+GCPHost#traceroute ip
+Target IP address: 10.17.20.1
+Source address: 10.120.0.1
+Numeric display [n]: y
+Timeout in seconds [3]:
+Probe count [3]:
+Minimum Time to Live [1]:
+Maximum Time to Live [30]:
+Port Number [33434]:
+Loose, Strict, Record, Timestamp, Verbose[none]:
+Type escape sequence to abort.
+Tracing the route to 10.17.20.1
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.120.254.3 5 msec 2 msec 3 msec
+  2 10.17.130.205 12 msec 6 msec 4 msec
+  3 10.17.130.210 5 msec *  8 msec
+GCPHost#ter len 0
+GCPHost#sh run
+Building configuration...
+
+Current configuration : 3412 bytes
+!
+! Last configuration change at 11:40:49 UTC Wed May 26 2021
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname GCPHost
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 10.120.0.1 255.255.254.0
+!
+interface Loopback2
+ ip address 10.120.2.1 255.255.254.0
+!
+interface Loopback3
+ ip address 10.120.4.1 255.255.254.0
+!
+interface Loopback4
+ ip address 10.120.6.1 255.255.254.0
+!
+interface GigabitEthernet0/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ switchport access vlan 254
+ switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ switchport access vlan 254
+ switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ media-type rj45
+ negotiation auto
+!
+interface Vlan254
+ ip address 10.120.254.1 255.255.255.0
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 10.120.254.3
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+line aux 0
+line vty 0 4
+!
+!
+end
+
+GCPHost#sh ip int br
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  up                    up    
+GigabitEthernet0/1     unassigned      YES unset  up                    up    
+GigabitEthernet0/2     unassigned      YES unset  up                    up    
+GigabitEthernet0/3     unassigned      YES unset  up                    up    
+GigabitEthernet1/0     unassigned      YES unset  up                    up    
+GigabitEthernet1/1     unassigned      YES unset  up                    up    
+GigabitEthernet1/2     unassigned      YES unset  up                    up    
+GigabitEthernet1/3     unassigned      YES unset  up                    up    
+Loopback1              10.120.0.1      YES manual up                    up    
+Loopback2              10.120.2.1      YES manual up                    up    
+Loopback3              10.120.4.1      YES manual up                    up    
+Loopback4              10.120.6.1      YES manual up                    up    
+Vlan254                10.120.254.1    YES manual up                    up    
+GCPHost#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 10.120.254.3 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 10.120.254.3
+      10.0.0.0/8 is variably subnetted, 10 subnets, 3 masks
+C        10.120.0.0/23 is directly connected, Loopback1
+L        10.120.0.1/32 is directly connected, Loopback1
+C        10.120.2.0/23 is directly connected, Loopback2
+L        10.120.2.1/32 is directly connected, Loopback2
+C        10.120.4.0/23 is directly connected, Loopback3
+L        10.120.4.1/32 is directly connected, Loopback3
+C        10.120.6.0/23 is directly connected, Loopback4
+L        10.120.6.1/32 is directly connected, Loopback4
+C        10.120.254.0/24 is directly connected, Vlan254
+L        10.120.254.1/32 is directly connected, Vlan254
+GCPHost#sh ip route bgp
+GCPHost#sh ip bgp
+% BGP not active
+
+GCPHost#sh ip sla sum
+IPSLAs Latest Operation Summary
+Codes: * active, ^ inactive, ~ pending
+
+ID           Type        Destination       Stats       Return      Last
+                                           (ms)        Code        Run
+-----------------------------------------------------------------------
+
+GCPHost#sh track
+GCPHost#sh ip access-list
+Extended IP access list preauth_ipv4_acl (per-user)
+    10 permit udp any any eq domain
+    20 permit tcp any any eq domain
+    30 permit udp any eq bootps any
+    40 permit udp any any eq bootpc
+    50 permit udp any eq bootpc any
+    60 deny ip any any
+GCPHost#sh ip prefix-list
+GCPHost#sh route-map
+GCPHost#

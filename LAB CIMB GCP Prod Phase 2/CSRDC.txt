@@ -1,0 +1,378 @@
+% Invalid input detected at '^' marker.
+
+CSRDC#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+CSRDC(config)#no ip domain lookup
+CSRDC(config)#^Z
+CSRDC#wr
+Building configuration...
+
+*May 26 11:59:42.477: %SYS-5-CONFIG_I: Configured from console by console[OK]
+CSRDC#
+CSRDC#
+CSRDC#
+CSRDC#
+CSRDC#
+*May 26 11:59:45.005: %GRUB-5-CONFIG_WRITING: GRUB configuration is being updated on disk. Please wait...
+*May 26 11:59:45.736: %GRUB-5-CONFIG_WRITTEN: GRUB configuration was written to disk successfully.
+CSRDC#
+CSRDC#
+CSRDC#
+CSRDC#ter len 0
+CSRDC#ter len 0
+CSRDC#sh run
+Building configuration...
+
+Current configuration : 5305 bytes
+!
+! Last configuration change at 11:59:42 UTC Wed May 26 2021
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname CSRDC
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+redundancy
+!
+!
+track 1 it0/1
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ ip address 10.120.254.3 255.255.255.0
+ ip policy route-map PBR-ASR-DC
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ ip address 10.124.252.3 255.255.255.0
+ ip policy route-map PBR-ASR-DC
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router bgp 65242
+ bgp log-neighbor-changes
+ network 10.120.0.0 mask 255.255.0.0
+ network 10.120.0.0 mask 255.255.254.0
+ network 10.120.2.0 mask 255.255.254.0
+ network 10.124.255.3 mask 255.255.255.255
+ neighbor 10.17.130.205 remote-as 64514
+ neighbor 10.17.130.205 fall-over bfd
+ neighbor 10.17.130.205 route-map DENY_IN_FROM_ASR in
+ neighbor 10.17.130.205 route-map FILTER_OUT_TO_ASR out
+ neighbor 10.124.252.2 remote-as 65242
+ neighbor 10.124.252.2 next-hop-self
+ neighbor 10.124.252.2 route-map PEER_CSR_IN in
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 10.120.0.0 255.255.0.0 10.120.254.1
+ip route 10.120.0.0 255.255.254.0 10.120.254.1
+ip route 10.120.2.0 255.255.254.0 10.120.254.1
+!
+ip access-list standard DC
+ permit 10.120.0.0 0.0.1.255
+ permit 10.120.2.0 0.0.1.255
+ip access-list standard DRC
+ permit 10.120.4.0 0.0.1.255
+ permit 10.120.6.0 0.0.1.255
+!
+!
+ip prefix-list DENY_IN_FROM_ASR seq 5 deny 0.0.0.0/0
+ip prefix-list DENY_IN_FROM_ASR seq 10 deny 10.7.100.99/32
+ip prefix-list DENY_IN_FROM_ASR seq 15 permit 0.0.0.0/0 le 32
+!
+ip prefix-list FILTER_OUT_TO_ASR seq 5 permit 10.120.0.0/16 le 32
+ip prefix-list FILTER_OUT_TO_ASR seq 10 permit 10.124.255.0/24 le 32
+!
+ip prefix-list PEER_CSR_IN seq 5 deny 10.120.0.0/16 le 32
+ip prefix-list PEER_CSR_IN seq 15 permit 0.0.0.0/0 le 32
+ip sla 1
+ icmp-echo 10.17.100.99 source-ip 10.124.255.3
+ threshold 400
+ timeout 500
+ frequency 3
+ip sla schedule 1 life forever start-time now
+ip sla 2
+ icmp-echo 10.7.100.99 source-ip 10.124.255.3
+ threshold 400
+ timeout 500
+ frequency 3
+ip sla schedule 2 life forever start-time now
+!
+route-map PBR-ASR-DC permit 10
+ match ip address DC
+ set ip next-hop verify-availability 10.17.130.205 1 track 1
+!
+route-map PBR-ASR-DC permit 20
+ match ip address DRC
+ set ip next-hop verify-availability 10.124.252.2 2 track 2
+!
+route-map PBR-ASR-DC permit 30
+!
+route-map DENY_IN_FROM_ASR permit 10
+ match ip address prefix-list DENY_IN_FROM_ASR
+!
+route-map PEER_CSR_IN permit 10
+ match ip address prefix-list PEER_CSR_IN
+!
+route-map FILTER_OUT_TO_ASR permit 10
+ match ip address prefix-list FILTER_OUT_TO_ASR
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+no scheduler allocate
+!
+end
+
+CSRDC#sh ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0         10.17.130.206   YES manual up                    up  
+GigabitEthernet0/1         unassigned      YES unset  up                    up  
+GigabitEthernet0/2         10.120.254.3    YES manual up                    up  
+GigabitEthernet0/3         10.124.252.3    YES manual up                    up  
+Loopback0                  10.124.255.3    YES manual up                    up  
+CSRDC#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 16 subnets, 5 masks
+B        10.7.20.0/24 [200/0] via 10.124.252.2, 00:33:51
+B        10.7.100.99/32 [200/0] via 10.124.252.2, 00:33:51
+B        10.17.20.0/24 [20/0] via 10.17.130.205, 00:10:14
+B        10.17.100.99/32 [20/0] via 10.17.130.205, 00:10:14
+C        10.17.130.204/30 is directly connected, GigabitEthernet0/0
+L        10.17.130.206/32 is directly connected, GigabitEthernet0/0
+B        10.27.130.204/30 [200/0] via 10.124.252.2, 03:42:15
+S        10.120.0.0/16 [1/0] via 10.120.254.1
+S        10.120.0.0/23 [1/0] via 10.120.254.1
+S        10.120.2.0/23 [1/0] via 10.120.254.1
+C        10.120.254.0/24 is directly connected, GigabitEthernet0/2
+L        10.120.254.3/32 is directly connected, GigabitEthernet0/2
+C        10.124.252.0/24 is directly connected, GigabitEthernet0/3
+L        10.124.252.3/32 is directly connected, GigabitEthernet0/3
+B        10.124.255.2/32 [200/0] via 10.124.252.2, 03:42:15
+C        10.124.255.3/32 is directly connected, Loopback0
+B     172.16.0.0/16 [20/0] via 10.17.130.205, 00:10:14
+CSRDC#sh ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 16 subnets, 5 masks
+B        10.7.20.0/24 [200/0] via 10.124.252.2, 00:33:51
+B        10.7.100.99/32 [200/0] via 10.124.252.2, 00:33:51
+B        10.17.20.0/24 [20/0] via 10.17.130.205, 00:10:14
+B        10.17.100.99/32 [20/0] via 10.17.130.205, 00:10:14
+B        10.27.130.204/30 [200/0] via 10.124.252.2, 03:42:15
+B        10.124.255.2/32 [200/0] via 10.124.252.2, 03:42:15
+B     172.16.0.0/16 [20/0] via 10.17.130.205, 00:10:14
+CSRDC#sh ip bgp
+BGP table version is 58, local router ID is 10.124.255.3
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter,
+              x best-external, a additional-path, c RIB-compressed,
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *   10.7.20.0/24     10.17.130.205                          0 64514 64513 i
+ *>i                  10.124.252.2             0    100      0 64513 i
+ *>i 10.7.100.99/32   10.124.252.2             0    100      0 64513 i
+ *>  10.17.20.0/24    10.17.130.205                          0 64514 i
+ *>  10.17.100.99/32  10.17.130.205                          0 64514 i
+ *   10.27.130.204/30 10.17.130.205                          0 64514 64513 i
+ *>i                  10.124.252.2             0    100      0 64513 i
+ *>  10.120.0.0/23    10.120.254.1             0         32768 i
+ *>  10.120.0.0/16    10.120.254.1             0         32768 i
+ *>  10.120.2.0/23    10.120.254.1             0         32768 i
+ *>i 10.124.255.2/32  10.124.252.2             0    100      0 i
+ *>  10.124.255.3/32  0.0.0.0                  0         32768 i
+ *>  172.16.0.0       10.17.130.205                          0 64514 i
+ * i                  10.124.252.2             0    100      0 64513 i
+CSRDC#sh ip sla sum
+IPSLAs Latest Operation Summary
+Codes: * active, ^ inactive, ~ pending
+
+ID           Type        Destination       Stats       Return      Last
+                                           (ms)        Code        Run
+-----------------------------------------------------------------------
+*1           icmp-echo   10.17.100.99      RTT=5       OK          2 seconds ago
+
+
+
+
+*2           icmp-echo   10.7.100.99       RTT=5       OK          1 second ago
+
+
+
+
+
+CSRDC#sh track
+Track 1
+  IP SLA 1 reachability
+  Reachability is Up
+    24 changes, last change 00:10:09
+  Delay up 1 sec, down 1 sec
+  Latest operation return code: OK
+  Latest RTT (millisecs) 5
+  Tracked by:
+    Route Map 0
+Track 2
+  IP SLA 2 reachability
+  Reachability is Up
+    47 changes, last change 00:33:44
+  Delay up 1 sec, down 1 sec
+  Latest operation return code: OK
+  Latest RTT (millisecs) 5
+  Tracked by:
+    Route Map 0
+CSRDC#sh ip access-list
+Standard IP access list DC
+    10 permit 10.120.0.0, wildcard bits 0.0.1.255 (24864 matches)
+    20 permit 10.120.2.0, wildcard bits 0.0.1.255
+Standard IP access list DRC
+    10 permit 10.120.4.0, wildcard bits 0.0.1.255 (164905 matches)
+    20 permit 10.120.6.0, wildcard bits 0.0.1.255
+CSRDC#sh ip prefix-list
+ip prefix-list DENY_IN_FROM_ASR: 3 entries
+   seq 5 deny 0.0.0.0/0
+   seq 10 deny 10.7.100.99/32
+   seq 15 permit 0.0.0.0/0 le 32
+ip prefix-list FILTER_OUT_TO_ASR: 2 entries
+   seq 5 permit 10.120.0.0/16 le 32
+   seq 10 permit 10.124.255.0/24 le 32
+ip prefix-list PEER_CSR_IN: 2 entries
+   seq 5 deny 10.120.0.0/16 le 32
+   seq 15 permit 0.0.0.0/0 le 32
+CSRDC#sh route-map
+route-map PBR-ASR-DC, permit, sequence 10
+  Match clauses:
+    ip address (access-lists): DC
+  Set clauses:
+    ip next-hop verify-availability 10.17.130.205 1 track 1  [up]
+  Policy routing matches: 14586 packets, 1654866 bytes
+route-map PBR-ASR-DC, permit, sequence 20
+  Match clauses:
+    ip address (access-lists): DRC
+  Set clauses:
+    ip next-hop verify-availability 10.124.252.2 2 track 2  [up]
+  Policy routing matches: 39095 packets, 4451970 bytes
+route-map PBR-ASR-DC, permit, sequence 30
+  Match clauses:
+  Set clauses:
+  Policy routing matches: 4533 packets, 352879 bytes
+route-map DENY_IN_FROM_ASR, permit, sequence 10
+  Match clauses:
+    ip address prefix-lists: DENY_IN_FROM_ASR
+  Set clauses:
+  Policy routing matches: 0 packets, 0 bytes
+route-map PEER_CSR_IN, permit, sequence 10
+  Match clauses:
+    ip address prefix-lists: PEER_CSR_IN
+  Set clauses:
+  Policy routing matches: 0 packets, 0 bytes
+route-map FILTER_OUT_TO_ASR, permit, sequence 10
+  Match clauses:
+    ip address prefix-lists: FILTER_OUT_TO_ASR
+  Set clauses:
+  Policy routing matches: 0 packets, 0 bytes
+CSRDC#

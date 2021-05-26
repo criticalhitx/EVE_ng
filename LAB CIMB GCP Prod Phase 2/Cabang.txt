@@ -1,0 +1,239 @@
+Building configuration...
+Compressed configuration from 3417 bytes to 1649 bytes[OK]
+Cabang#
+*May 26 12:05:46.135: %GRUB-5-CONFIG_WRITING: GRUB configuration is being updated on disk. Please wait...
+*May 26 12:05:46.828: %GRUB-5-CONFIG_WRITTEN: GRUB configuration was written to disk successfully.
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#
+Cabang#ter len 0
+Cabang#sh run
+Building configuration...
+
+Current configuration : 3417 bytes
+!
+! Last configuration change at 09:15:38 UTC Wed May 26 2021
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname Cabang
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 172.16.0.1 255.255.255.0
+!
+interface Loopback2
+ ip address 172.16.1.1 255.255.255.0
+!
+interface Loopback3
+ ip address 172.16.2.1 255.255.255.0
+!
+interface Loopback4
+ ip address 172.16.3.1 255.255.255.0
+!
+interface GigabitEthernet0/0
+ no switchport
+ ip address 10.7.130.214 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ no switchport
+ ip address 10.17.130.214 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ media-type rj45
+ negotiation auto
+!
+router ospf 1
+ network 10.7.130.212 0.0.0.3 area 0
+ network 10.17.130.212 0.0.0.3 area 0
+ network 172.16.0.0 0.0.3.255 area 0
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+line aux 0
+line vty 0 4
+!
+!
+end
+
+Cabang#sh ip int br
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     10.7.130.214    YES manual up                    up
+GigabitEthernet0/1     unassigned      YES unset  up                    up
+GigabitEthernet0/2     unassigned      YES unset  up                    up
+GigabitEthernet0/3     10.17.130.214   YES manual up                    up
+GigabitEthernet1/0     unassigned      YES unset  up                    up
+GigabitEthernet1/1     unassigned      YES unset  up                    up
+GigabitEthernet1/2     unassigned      YES unset  up                    up
+GigabitEthernet1/3     unassigned      YES unset  up                    up
+Loopback1              172.16.0.1      YES manual up                    up
+Loopback2              172.16.1.1      YES manual up                    up
+Loopback3              172.16.2.1      YES manual up                    up
+Loopback4              172.16.3.1      YES manual up                    up
+Cabang#sh ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 10.17.130.213 to network 0.0.0.0
+
+O*E2  0.0.0.0/0 [110/1] via 10.17.130.213, 03:05:33, GigabitEthernet0/3
+                [110/1] via 10.7.130.213, 02:50:30, GigabitEthernet0/0
+      10.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
+C        10.7.130.212/30 is directly connected, GigabitEthernet0/0
+L        10.7.130.214/32 is directly connected, GigabitEthernet0/0
+C        10.17.130.212/30 is directly connected, GigabitEthernet0/3
+L        10.17.130.214/32 is directly connected, GigabitEthernet0/3
+      172.16.0.0/16 is variably subnetted, 8 subnets, 2 masks
+C        172.16.0.0/24 is directly connected, Loopback1
+L        172.16.0.1/32 is directly connected, Loopback1
+C        172.16.1.0/24 is directly connected, Loopback2
+L        172.16.1.1/32 is directly connected, Loopback2
+C        172.16.2.0/24 is directly connected, Loopback3
+L        172.16.2.1/32 is directly connected, Loopback3
+C        172.16.3.0/24 is directly connected, Loopback4
+L        172.16.3.1/32 is directly connected, Loopback4
+Cabang#sh ip route bgp
+Cabang#sh ip bgp
+% BGP not active
+
+Cabang#sh ip sla sum
+IPSLAs Latest Operation Summary
+Codes: * active, ^ inactive, ~ pending
+
+ID           Type        Destination       Stats       Return      Last
+                                           (ms)        Code        Run
+-----------------------------------------------------------------------
+
+Cabang#sh track
+Cabang#sh ip access-list
+Extended IP access list preauth_ipv4_acl (per-user)
+    10 permit udp any any eq domain
+    20 permit tcp any any eq domain
+    30 permit udp any eq bootps any
+    40 permit udp any any eq bootpc
+    50 permit udp any eq bootpc any
+    60 deny ip any any
+Cabang#sh ip prefix-list
+Cabang#sh route-map
+Cabang#
